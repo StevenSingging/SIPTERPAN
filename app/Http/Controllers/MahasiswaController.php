@@ -106,8 +106,8 @@ class MahasiswaController extends Controller
         $milestonemhs = Milestone::where('project_id', $id)->get();
         $notifp = Notification::select('judul', 'user_id', 'project_id', 'created_at')
             ->where('project_id', $id)
-            ->selectRaw('date(created_at) as tanggal')
-            ->orderByDesc('tanggal')
+            ->selectRaw('DATE(created_at) as tanggal, TIME(created_at) as waktu')
+            ->orderByDesc('created_at')
             ->get()
             ->groupBy(function ($item) {
                 return $item->tanggal;
@@ -182,51 +182,6 @@ class MahasiswaController extends Controller
 
         //dd($events);
         return view('mahasiswa.calendar', compact('events', 'leftmenu'));
-    }
-
-    public function tasklist()
-    {
-        $menu = new Project();
-        $leftmenu = $menu->getmenu();
-        $tasklist = Task::whereHas('projectt', function ($query) {
-            $query->where('mahasiswa1', '=', auth()->user()->no_induk);
-        })->orwhereHas('projectt', function ($query) {
-            $query->where('mahasiswa2', '=', auth()->user()->no_induk);
-        })->get();
-        //dd($tasklist);
-        return view('mahasiswa.tasklist', compact('tasklist', 'leftmenu'));
-    }
-
-    public function updatetask(Request $request, $id)
-    {
-        $request->validate([
-            'filec' => 'required|file|mimes:jpeg,png,jpg,pdf,doc,docx,xls,xlsx,ppt,pptx,txt|max:2048'
-        ]);
-        $file = $request->file('filec');
-        $filename = $file->getClientOriginalName();
-        $path = $file->move(storage_path() . '\app\files', $filename);
-        $task = Task::find($id);
-
-        $filec = new File();
-        $filec->project_id = $task->project_id;
-        $filec->file_name = $filename;
-        $filec->file_path = $path;
-        $filec->save();
-
-        $task->file_id = $filec->id;
-        $task->user_id = $request->user()->id;
-        $task->status = '1';
-        $task->save();
-
-        $notif = new Notification();
-        $notif->user_id = $request->user()->id;
-        $notif->project_id =  $task->project_id;
-        $notif->judul = "Mengumpulkan Task " . $task->nama;
-        $notif->created_at = Carbon::now(); # new \Datetime()
-        $notif->updated_at = Carbon::now(); # new \Datetime()
-        $notif->save();
-
-        return redirect()->back();
     }
 
     public function simpanconversation(Request $request)

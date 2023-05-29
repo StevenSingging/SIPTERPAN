@@ -37,7 +37,7 @@ class AdminController extends Controller
         $totalmhs = Pterpan::where('status', 'Mahasiswa')->count();
         $totaldsn = Pterpan::where('status', 'Dosen')->count();
         $data['YearProjectChart'] = $chart->build();
-        return view('admin.dashboard', compact('leftmenu', 'totalproject', 'totaluser', 'totalmhs', 'totaldsn'),['chart' => $chart->build(),'chart1' => $chart1->build()]);
+        return view('admin.dashboard', compact('leftmenu', 'totalproject', 'totaluser', 'totalmhs', 'totaldsn'), ['chart' => $chart->build(), 'chart1' => $chart1->build()]);
     }
     public function timeline()
     {
@@ -46,8 +46,8 @@ class AdminController extends Controller
         $leftmenu = $menu->getmenu();
         $notif = Notification::select('judul', 'user_id', 'created_at')
             ->where('user_id', auth()->user()->id)
-            ->selectRaw('date(created_at) as tanggal')
-            ->orderByDesc('tanggal')
+            ->selectRaw('DATE(created_at) as tanggal, TIME(created_at) as waktu')
+            ->orderByDesc('created_at')
             ->get()
             ->groupBy(function ($item) {
                 return $item->tanggal;
@@ -83,36 +83,6 @@ class AdminController extends Controller
         }
         //dd($ctask);
         return view('admin.calendar', compact('events', 'leftmenu'));
-    }
-
-    public function mahasiswa()
-    {
-        $menu = new Project();
-
-        $leftmenu = $menu->getmenu();
-        $mhs = Pterpan::where('status', 'Mahasiswa')
-            ->orderBy('no_induk', 'asc')
-            ->paginate();
-            $projects = Project::all();
-            foreach ($projects as $p) {
-                $nilaij = json_encode($p->nilai);
-                $nim = Pterpan::select('no_induk')->get()->pluck('no_induk')->toArray();
-        
-                if (in_array($p->mahasiswa1, $nim) && isset($nilaij[0]) && $nilaij[0] >= 55 && $p->jatuh_tempo < date('Y-m-d')) {
-                    $pterpans = Pterpan::where('no_induk', $p->mahasiswa1)->first();
-                    $pterpans->delete();
-                    
-                } elseif (in_array($p->mahasiswa2, $nim) && isset($nilaij[1]) && $nilaij[1] >= 55 && $p->jatuh_tempo < date('Y-m-d')) {
-                    $pterpans = Pterpan::where('no_induk', $p->mahasiswa2)->first();
-                    $pterpans->delete();
-                    
-                } elseif (in_array($p->mahasiswa3, $nim) && isset($nilaij[2]) && $nilaij[2] >= 55 && $p->jatuh_tempo < date('Y-m-d')) {
-                    $pterpans = Pterpan::where('no_induk', $p->mahasiswa3)->first();
-                    $pterpans->delete();
-                    
-                }
-            }
-        return view('admin.tambahmhs', compact('mhs', 'leftmenu'));
     }
 
     public function dosen()
@@ -195,6 +165,33 @@ class AdminController extends Controller
         return redirect('admin/mahasiswa')->with($sucess);
     }
 
+    public function mahasiswa()
+    {
+        $menu = new Project();
+
+        $leftmenu = $menu->getmenu();
+        $mhs = Pterpan::where('status', 'Mahasiswa')
+            ->orderBy('no_induk', 'asc')
+            ->paginate();
+        $projects = Project::all();
+        foreach ($projects as $p) {
+            $nilaij = json_encode($p->nilai);
+            $nim = Pterpan::select('no_induk')->get()->pluck('no_induk')->toArray();
+
+            if (in_array($p->mahasiswa1, $nim) && isset($nilaij[0]) && $nilaij[0] >= 55 && $p->jatuh_tempo < date('Y-m-d')) {
+                $pterpans = Pterpan::where('no_induk', $p->mahasiswa1)->first();
+                $pterpans->delete();
+            } elseif (in_array($p->mahasiswa2, $nim) && isset($nilaij[1]) && $nilaij[1] >= 55 && $p->jatuh_tempo < date('Y-m-d')) {
+                $pterpans = Pterpan::where('no_induk', $p->mahasiswa2)->first();
+                $pterpans->delete();
+            } elseif (in_array($p->mahasiswa3, $nim) && isset($nilaij[2]) && $nilaij[2] >= 55 && $p->jatuh_tempo < date('Y-m-d')) {
+                $pterpans = Pterpan::where('no_induk', $p->mahasiswa3)->first();
+                $pterpans->delete();
+            }
+        }
+        return view('admin.tambahmhs', compact('mhs', 'leftmenu'));
+    }
+
     public function updatemhs(Request $request, $id)
     {
         $mhs = Pterpan::find($id);
@@ -202,11 +199,11 @@ class AdminController extends Controller
         $mhs->no_induk = $request->no_induk;
         $mhs->save();
         $sucess = array(
-        'message' => 'Berhasil mengupdate Mahasiswa',
-        'alert-type' => 'success'
+            'message' => 'Berhasil mengupdate Mahasiswa',
+            'alert-type' => 'success'
         );
         // Set status periode lain menjadi tidak aktif jika ada satu periode yang diaktifkan
-        
+
         return redirect()->back()->with($sucess);
     }
 
@@ -216,12 +213,20 @@ class AdminController extends Controller
         $dsn->name = $request->name;
         $dsn->no_induk = $request->no_induk;
         $dsn->save();
+
+        $notif = new Notification();
+        $notif->user_id = $request->user()->id;
+        $notif->judul = "Mengupdate Dosen";
+        $notif->created_at = Carbon::now(); # new \Datetime()
+        $notif->updated_at = Carbon::now(); # new \Datetime()
+        $notif->save();
+
         $sucess = array(
-        'message' => 'Berhasil mengupdate Dosen',
-        'alert-type' => 'success'
+            'message' => 'Berhasil mengupdate Dosen',
+            'alert-type' => 'success'
         );
         // Set status periode lain menjadi tidak aktif jika ada satu periode yang diaktifkan
-        
+
         return redirect()->back()->with($sucess);
     }
 
@@ -232,10 +237,14 @@ class AdminController extends Controller
             'name' => $request->name,
             'status' => 'Dosen'
         ]);
-        Notification::create([
-            'user_id' => $request->user()->id,
-            'judul' => "Menambah Dosen ",
-        ]);
+
+        $notif = new Notification();
+        $notif->user_id = $request->user()->id;
+        $notif->judul = "Menambah Dosen";
+        $notif->created_at = Carbon::now(); # new \Datetime()
+        $notif->updated_at = Carbon::now(); # new \Datetime()
+        $notif->save();
+
         $sucess = array(
             'message' => 'Berhasil menambah Dosen',
             'alert-type' => 'success'
@@ -276,7 +285,7 @@ class AdminController extends Controller
             ->orderBy('created_at', 'asc')
             ->get();
         //dd($cmile);
-        return view('admin.vprojectadm', compact('prjk', 'history','pterpan1', 'cdsn', 'cmhs1', 'cmhs2', 'omiles', 'notifp', 'otask', 'file', 'conver', 'converr', 'leftmenu'));
+        return view('admin.vprojectadm', compact('prjk', 'history', 'pterpan1', 'cdsn', 'cmhs1', 'cmhs2', 'omiles', 'notifp', 'otask', 'file', 'conver', 'converr', 'leftmenu'));
     }
 
     public function getJumlahProjectByNim($nim)
@@ -298,7 +307,7 @@ class AdminController extends Controller
             ->leftJoin('pterpans', 'projects.dosen', '=', 'pterpans.no_induk')
             ->select('projects.*', 'pterpans.name as dosen')
             ->get();
-        
+
         $nilai = [];
         foreach ($projects as $project) {
             $dosen = $project->dosen;
@@ -306,7 +315,7 @@ class AdminController extends Controller
             $nilai[] = json_decode($project->nilai, true)[array_search($nim, [$project->mahasiswa1, $project->mahasiswa2, $project->mahasiswa3])];
         }
 
-        return response()->json(['projects' => $projects, 'nilai' => $nilai,'dosens' => $dosens]);
+        return response()->json(['projects' => $projects, 'nilai' => $nilai, 'dosens' => $dosens]);
     }
 
     public function listproject(Request $request)
@@ -323,7 +332,7 @@ class AdminController extends Controller
         $tahunajaran = $project->unique('tahun_ajaran')->pluck('tahun_ajaran');
         $dsn = Pterpan::where('status', 'Dosen')->get();
 
-        return view('admin.listproject', compact('leftmenu', 'project', 'tahunajaran', 'listproject','mhs','dsn'));
+        return view('admin.listproject', compact('leftmenu', 'project', 'tahunajaran', 'listproject', 'mhs', 'dsn'));
     }
 
     public function listperiode()
@@ -336,16 +345,24 @@ class AdminController extends Controller
 
     public function tambahperiode(Request $request)
     {
-       $periode = new Periode();
-       $periode->tahun_ajaran = $request->tahun_ajaran;
-       $periode->tgl_awal = $request->tgl_awal;
-       $periode->tgl_akhir = $request->tgl_akhir;
-       $periode->save();
-       $sucess = array(
-        'message' => 'Berhasil membuat Periode',
-        'alert-type' => 'success'
+        $periode = new Periode();
+        $periode->tahun_ajaran = $request->tahun_ajaran;
+        $periode->tgl_awal = $request->tgl_awal;
+        $periode->tgl_akhir = $request->tgl_akhir;
+        $periode->save();
+
+        $notif = new Notification();
+        $notif->user_id = $request->user()->id;
+        $notif->judul = "Menambah Periode";
+        $notif->created_at = Carbon::now(); # new \Datetime()
+        $notif->updated_at = Carbon::now(); # new \Datetime()
+        $notif->save();
+
+        $sucess = array(
+            'message' => 'Berhasil membuat Periode',
+            'alert-type' => 'success'
         );
-       return redirect()->back()->with($sucess);
+        return redirect()->back()->with($sucess);
     }
 
     public function updateperiode(Request $request, $id)
@@ -358,10 +375,18 @@ class AdminController extends Controller
         if ($request->status == 1) {
             Periode::where('id', '!=', $periode->id)->update(['status' => '0']);
         }
+
+        $notif = new Notification();
+        $notif->user_id = $request->user()->id;
+        $notif->judul = "Mengupdate Periode";
+        $notif->created_at = Carbon::now(); # new \Datetime()
+        $notif->updated_at = Carbon::now(); # new \Datetime()
+        $notif->save();
+
         $sucess = array(
             'message' => 'Berhasil merubah Periode',
             'alert-type' => 'success'
-            );
+        );
         return redirect()->back()->with($sucess);
     }
 
@@ -374,11 +399,11 @@ class AdminController extends Controller
         $periode->tgl_akhir = $request->tgl_akhir;
         $periode->save();
         $sucess = array(
-        'message' => 'Berhasil mengupdate Periode',
-        'alert-type' => 'success'
+            'message' => 'Berhasil mengupdate Periode',
+            'alert-type' => 'success'
         );
         // Set status periode lain menjadi tidak aktif jika ada satu periode yang diaktifkan
-        
+
         return redirect()->back()->with($sucess);
     }
 
@@ -392,12 +417,20 @@ class AdminController extends Controller
         $project->mahasiswa2 = $request->mahasiswa2;
         $project->mahasiswa3 = $request->mahasiswa3;
         $project->save();
+
+        $notif = new Notification();
+        $notif->user_id = $request->user()->id;
+        $notif->judul = "Mengupdate Proyek";
+        $notif->created_at = Carbon::now(); # new \Datetime()
+        $notif->updated_at = Carbon::now(); # new \Datetime()
+        $notif->save();
+
         $sucess = array(
-        'message' => 'Berhasil mengupdate Periode',
-        'alert-type' => 'success'
+            'message' => 'Berhasil mengupdate Periode',
+            'alert-type' => 'success'
         );
         // Set status periode lain menjadi tidak aktif jika ada satu periode yang diaktifkan
-        
+
         return redirect()->back()->with($sucess);
     }
 
@@ -405,10 +438,18 @@ class AdminController extends Controller
     public function import()
     {
         Excel::import(new PterpanImport, request()->file('file'));
+
+        $notif = new Notification();
+        $notif->user_id = auth()->user()->id;
+        $notif->judul = "Mengimport Data Mahasiswa";
+        $notif->created_at = Carbon::now(); # new \Datetime()
+        $notif->updated_at = Carbon::now(); # new \Datetime()
+        $notif->save();
+
         $sucess = array(
             'message' => 'Berhasil mengimport data mahasiswa',
             'alert-type' => 'success'
-            );
+        );
         return redirect()->back()->with($sucess);
     }
 
@@ -423,6 +464,7 @@ class AdminController extends Controller
         $notif->created_at = Carbon::now(); # new \Datetime()
         $notif->updated_at = Carbon::now(); # new \Datetime()
         $notif->save();
+
         $sucess = array(
             'message' => 'Berhasil menghapus Mahasiswa',
             'alert-type' => 'success'
@@ -441,6 +483,7 @@ class AdminController extends Controller
         $notif->created_at = Carbon::now(); # new \Datetime()
         $notif->updated_at = Carbon::now(); # new \Datetime()
         $notif->save();
+
         $sucess = array(
             'message' => 'Berhasil menghapus Dosen',
             'alert-type' => 'success'

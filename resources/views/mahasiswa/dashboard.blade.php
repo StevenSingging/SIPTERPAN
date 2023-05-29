@@ -141,7 +141,7 @@
                             @php
                             $mahasiswa = \App\Models\History::where('no_induk', $no_induk)->first();
                             @endphp
-                            {{$mahasiswa->nama}}
+                            {{$mahasiswa->nama}}<br>
                             @endif
 
                             @if(!empty($dprjct->mahasiswa3 == $no_induk))

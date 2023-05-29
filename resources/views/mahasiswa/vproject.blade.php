@@ -365,7 +365,7 @@
                                                 <tr align="center">
                                                     <td scope="row"><?php echo e($no++) + (($file->currentPage() - 1) * $file->perPage()) ?></td>
                                                     <td>{{$dfile->file_name}}</td>
-                                                    <td>{{date('jS \of F Y h:i:s A', strtotime($dfile->updated_at))}}</td>
+                                                    <td>{{$dfile->updated_at}}</td>
                                                     <td>
                                                         <a class="btn btn-primary btn-sm" href="{{ route('downloadfile', ['id' => $dfile->id]) }}" ><i class="fas fa-download"></i></a>
                                                     </td>
@@ -627,8 +627,8 @@
                             <b>Mahasiswa 3</b>&emsp; &emsp; &emsp; &emsp; &emsp; &ensp;{{$mahasiswa->nama}}</br>
                             @endif
                             @endforeach
-                            <b>Start</b>&emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &ensp; &ensp; {{date('d F Y', strtotime($prj->mulai))}}</br>
-                            <b>End</b>&emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &ensp; {{date('d F Y', strtotime($prj->jatuh_tempo))}}</br>
+                            <b>Tanggal Mulai</b>   &ensp; &emsp; &emsp; &emsp; &ensp; &ensp; {{date('d F Y', strtotime($prj->mulai))}}</br>
+                            <b>Tanggal Selesai</b>   &ensp; &emsp; &emsp; &emsp; &ensp; {{date('d F Y', strtotime($prj->jatuh_tempo))}}</br>
                             @endforeach
                         </div>
                     </div>

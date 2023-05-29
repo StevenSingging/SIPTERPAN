@@ -586,7 +586,7 @@
                                                 <tr>
                                                     <td scope="row"><?php echo e($no++) + (($file->currentPage() - 1) * $file->perPage()) ?></td>
                                                     <td>{{$dfile->file_name}}</td>
-                                                    <td>{{date('jS \of F Y h:i:s A', strtotime($dfile->updated_at))}}</td>
+                                                    <td>{{$dfile->updated_at}}</td>
                                                     <td>
                                                         <a class="btn btn-primary btn-sm" href="{{ route('downloadfiledsn', ['id' => $dfile->id]) }}"><i class="fas fa-download"></i></a>
                                                         <a class="btn btn-danger btn-sm" href="{{url('/dosen/deletefile',$dfile->id)}}" onclick="return confirm('Apakah Anda yakin data akan dihapus ?')"><i class="fas fa-trash"></i></a>
@@ -823,7 +823,7 @@
                                 </div>
                                 <!-- /.timeline-label -->
                                 <!-- timeline item -->
-                                @foreach($aktivitas as $item)
+                                @foreach($aktivitas as $item) 
                                 <div>
                                     <i class="fas fa-envelope bg-blue"></i>
                                     <div class="timeline-item">

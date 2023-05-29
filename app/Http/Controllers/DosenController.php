@@ -124,8 +124,8 @@ class DosenController extends Controller
 
         $notifp = Notification::select('judul', 'user_id', 'project_id', 'created_at')
             ->where('project_id', $id)
-            ->selectRaw('date(created_at) as tanggal')
-            ->orderByDesc('tanggal')
+            ->selectRaw('DATE(created_at) as tanggal, TIME(created_at) as waktu')
+            ->orderByDesc('created_at')
             ->get()
             ->groupBy(function ($item) {
                 return $item->tanggal;
@@ -415,14 +415,13 @@ class DosenController extends Controller
 
         ]);
         //dd($fileu);
-
-        Notification::create([
-            'user_id' => $request->user()->id,
-            'project_id' => $request->project_id,
-            'judul' => "Mengupload file $filename ",
-            'created_at' =>  Carbon::now(), # new \Datetime()
-            'updated_at' => Carbon::now(),  # new \Datetime()
-        ]);
+        $notif = new Notification();
+        $notif->user_id = $request->user()->id;
+        $notif->project_id = $request->project_id;
+        $notif->judul = "Mengupload file " . $filename;
+        $notif->created_at = Carbon::now(); # new \Datetime()
+        $notif->updated_at = Carbon::now(); # new \Datetime()
+        $notif->save();
         //dd($filename);
         $sucess = array(
             'message' => 'Berhasil menyimpan File',
@@ -438,8 +437,8 @@ class DosenController extends Controller
 
         $notif = new Notification();
         $notif->user_id = $request->user()->id;
-        $notif->project_id =  $file->project_id;
-        $notif->judul = "Menghapus File " . $file->file_name;
+        $notif->project_id = $file->project_id;
+        $notif->judul = "Berhasil Menghapus File " . $file->file_name;
         $notif->created_at = Carbon::now(); # new \Datetime()
         $notif->updated_at = Carbon::now(); # new \Datetime()
         $notif->save();

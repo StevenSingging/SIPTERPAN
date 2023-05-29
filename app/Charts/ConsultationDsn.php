@@ -41,7 +41,7 @@ class ConsultationDsn
         return $this->chart->barChart()
             ->setTitle('Konsultasi')
             ->addData('Jumlah Konsultasi', array_values($mahasiswasCounts))
-            ->setColors(['#ffc63b',])
+            ->setColors(['#00E396',])
             ->setXAxis($mahasiswas);
     }
 }
