@@ -42,7 +42,7 @@
       <div class="col-md-6">
         <div class="form-group">
           <label for="Dosen">Dosen Pembimbing</label>
-          <select id="Dosen" class="form-control custom-select" name="dosen">
+          <select id="Dosen" class="form-control custom-select" name="dosen" required>
             <option value="" selected disabled>Pilih Dosen</option>
             @foreach($dsn as $ddsn)
             <option value="{{ $ddsn->no_induk }}">{{$ddsn->name}}</option>

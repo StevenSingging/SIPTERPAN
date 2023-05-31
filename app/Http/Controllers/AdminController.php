@@ -378,7 +378,7 @@ class AdminController extends Controller
 
         $notif = new Notification();
         $notif->user_id = $request->user()->id;
-        $notif->judul = "Mengupdate Periode";
+        $notif->judul = "Mengganti Periode";
         $notif->created_at = Carbon::now(); # new \Datetime()
         $notif->updated_at = Carbon::now(); # new \Datetime()
         $notif->save();

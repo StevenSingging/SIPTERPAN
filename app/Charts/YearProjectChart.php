@@ -49,6 +49,6 @@ class YearProjectChart
             ->addData('Project selesai', $data['1'])
             ->addData('Project gagal', $data['2'])
             ->setColors(['#ffc63b', '#00E396','#FF455F'])
-            ->setXAxis($tahunAjaran->toArray());
+            ->setXAxis($xAxis);
     }
 }

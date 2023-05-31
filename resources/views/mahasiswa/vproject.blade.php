@@ -85,9 +85,9 @@
                                             @elseif($value->status == '1' && $value->jatuh_tempo < date('Y-m-d')) 
 
                                             @elseif($value->status == '1' && $value->jatuh_tempo >= date('Y-m-d'))
-                                                <input type="file" name="filec" class="form-control">
+                                                <input type="file" name="filec" class="form-control" required>
                                             @elseif($value->status == '0' )
-                                                <input type="file" name="filec" class="form-control">
+                                                <input type="file" name="filec" class="form-control" required>
                                             @endif
 
                                         </div>
@@ -225,15 +225,15 @@
                                         @endforeach
                                         <div class="form-group">
                                             <label for="inputName">Tanggal</label>
-                                            <input type="date" name="tgl_logbook" class="form-control">
+                                            <input type="date" name="tgl_logbook" class="form-control" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputName">Kegiatan</label>
-                                            <input type="text" name="kegiatan" class="form-control">
+                                            <input type="text" name="kegiatan" class="form-control" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputDescription">Description</label>
-                                            <textarea name="deskripsi" class="form-control" rows="4"></textarea>
+                                            <textarea name="deskripsi" class="form-control" rows="4" required></textarea>
                                         </div>
 
 
@@ -401,10 +401,10 @@
                                         </div>
                                         @endforeach
                                         <div class="form-group">
-                                            <input type="text" name="judul" class="form-control" placeholder="Masukkan Judul">
+                                            <input type="text" name="judul" class="form-control" placeholder="Masukkan Judul" required>
                                         </div>
                                         <div class="form-group">
-                                            <textarea name="teks" class="form-control" rows="4" placeholder="Masukkan Pesan"></textarea>
+                                            <textarea name="teks" class="form-control" rows="4" placeholder="Masukkan Pesan" required></textarea>
                                         </div>
                                         <div class="form-group">
                                             <input type="file" name="filec" class="form-control">
@@ -527,7 +527,7 @@
                                             @endforeach
                                             <input type="text" name="conver_id" class="form-control" value="{{$convers->id}}" readonly hidden>
                                             <div class="form-group">
-                                                `<textarea name="teks" class="form-control" rows="2" placeholder="Enter Message"></textarea>
+                                                `<textarea name="teks" class="form-control" rows="2" placeholder="Enter Message" required></textarea>
                                             </div>
                                             <div class="form-group">
                                                 <input type="file" name="filec" class="form-control">

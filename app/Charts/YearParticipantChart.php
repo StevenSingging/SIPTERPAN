@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Charts;
+
 use App\Models\History;
 use ArielMejiaDev\LarapexCharts\LarapexChart;
 
@@ -18,11 +19,15 @@ class YearParticipantChart
         $tahun_ajaran = History::distinct('tahun_ajaran')->pluck('tahun_ajaran')->toArray();
         $jumlah_peserta = [];
         foreach ($tahun_ajaran as $tahun) {
+            $tahun_label = substr($tahun, 0, -1);
+            $semester_label = (int) substr($tahun, -1) % 2 == 0 ? 'Genap' : 'Ganjil';
+
             $jumlah_peserta[] = History::where('tahun_ajaran', $tahun)->count('no_induk');
+            $tahun_ajaran_label[] = $tahun_label . ' ' . $semester_label;
         }
         return $this->chart->barChart()
             ->setTitle('Jumlah Peserta tiap Tahun Ajaran')
-            ->addData('Jumlah Peserta',$jumlah_peserta)
-            ->setXAxis($tahun_ajaran);
+            ->addData('Jumlah Peserta', $jumlah_peserta)
+            ->setXAxis($tahun_ajaran_label);
     }
 }

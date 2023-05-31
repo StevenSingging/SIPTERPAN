@@ -56,11 +56,11 @@
                                         @endforeach
                                         <div class="form-group">
                                             <label for="inputName">Nama Milestone</label>
-                                            <input type="text" name="nama" class="form-control">
+                                            <input type="text" name="nama" class="form-control" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputDescription">Deskripsi</label>
-                                            <textarea name="deskripsi" class="form-control" rows="4"></textarea>
+                                            <textarea name="deskripsi" class="form-control" rows="4" required></textarea>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputName">Tanggal Mulai</label>
@@ -242,15 +242,15 @@
                                         @endforeach
                                         <div class="form-group">
                                             <label for="inputName">Tanggal Konsultasi</label>
-                                            <input type="date" name="tgl_konsul" class="form-control">
+                                            <input type="date" name="tgl_konsul" class="form-control" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputName">Nama Konsultasi</label>
-                                            <input type="text" name="name" class="form-control">
+                                            <input type="text" name="name" class="form-control" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputDescription">Deskripsi</label>
-                                            <textarea name="deskripsi" class="form-control" rows="4"></textarea>
+                                            <textarea name="deskripsi" class="form-control" rows="4" required></textarea>
                                         </div>
                                         <div class="form-group">
                                             @foreach($history as $h)
@@ -295,7 +295,7 @@
                                     <div class="card-header p-0 border-bottom-0">
                                         <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
                                             <li class="nav-item">
-                                                <a class="nav-link active" id="otask-tab" data-toggle="pill" href="#otask" role="tab" aria-controls="otask" aria-selected="true">Konsultasi Lain</a>
+                                                <a class="nav-link active" id="otask-tab" data-toggle="pill" href="#otask" role="tab" aria-controls="otask" aria-selected="true">Konsultasi Lainnya</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -527,7 +527,7 @@
                                     <div class="card-body">
                                         <table id="example2" class="table table-bordered table-hover">
                                             <thead>
-                                                <tr>
+                                                <tr align="center">
                                                     <th>No</th>
                                                     <th>Mahasiswa</th>
                                                     <th>Tanggal</th>
@@ -541,7 +541,7 @@
                                                 <tr align="center">
                                                     <td scope="row"><?php echo e($no++) + (($logmhs->currentPage() - 1) * $logmhs->perPage()) ?></td>
                                                     <td>{{$lmhs->mahasiswa}}</td>
-                                                    <td>{{$lmhs->tgl_logbook}}</td>
+                                                    <td>{{date('d F Y', strtotime($lmhs->tgl_logbook))}}</td>
                                                     <td>{{$lmhs->kegiatan}}</td>
                                                     <td>{{$lmhs->deskripsi}}</td>
 
@@ -661,10 +661,10 @@
                                         </div>
                                         @endforeach
                                         <div class="form-group">
-                                            <input type="text" name="judul" class="form-control" placeholder="Masukkan Judul">
+                                            <input type="text" name="judul" class="form-control" placeholder="Masukkan Judul" required>
                                         </div>
                                         <div class="form-group">
-                                            <textarea name="teks" class="form-control" rows="4" placeholder="Masukkan Pesan"></textarea>
+                                            <textarea name="teks" class="form-control" rows="4" placeholder="Masukkan Pesan" required></textarea>
                                         </div>
                                         <div class="form-group">
                                             <input type="file" name="filec" class="form-control">
@@ -789,7 +789,7 @@
                                             @endforeach
                                             <input type="text" name="conver_id" class="form-control" value="{{$convers->id}}" readonly hidden>
                                             <div class="form-group">
-                                                `<textarea name="teks" class="form-control" rows="2" placeholder="Enter Message"></textarea>
+                                                `<textarea name="teks" class="form-control" rows="2" placeholder="Enter Message" required></textarea>
                                             </div>
                                             <div class="form-group">
                                                 <input type="file" name="filec" class="form-control">
@@ -889,8 +889,8 @@
                             <b>Mahasiswa 3</b>&emsp; &emsp; &emsp; &emsp; &emsp; &ensp;{{$mahasiswa->nama}}</br>
                             @endif
                             @endforeach
-                            <b>Start</b>&emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &ensp; &ensp; {{date('d F Y', strtotime($prj->mulai))}}</br>
-                            <b>End</b>&emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &ensp; {{date('d F Y', strtotime($prj->jatuh_tempo))}}</br>
+                            <b>Tanggal Mulai</b> &ensp; &emsp; &emsp; &emsp; &ensp; &ensp; {{date('d F Y', strtotime($prj->mulai))}}</br>
+                            <b>Tanggal Selesai</b> &ensp; &emsp; &emsp; &emsp; &ensp; {{date('d F Y', strtotime($prj->jatuh_tempo))}}</br>
                             @endforeach
                         </div>
                     </div>
@@ -936,13 +936,15 @@
             "pageLength": 10,
         });
         $('#otherk').DataTable({
-            "paging": true,
+            "dom": '<"top"i>rt<"bottom"p><"clear">',
+            "paging ": true,
             "lengthChange": false,
             "searching": false,
             "ordering": true,
-            "info": true,
+            "info": false,
             "autoWidth": false,
             "responsive": true,
+            "pageLength": 5,
         });
 
     });

@@ -51,9 +51,9 @@
                     <td>{{date('d F Y', strtotime($data->tgl_awal))}}</td>
                     <td>{{date('d F Y', strtotime($data->tgl_akhir))}}</td>
                     @if($data->status == '1')
-                    <td><span class="badge badge-success">Active</span></td>
+                    <td><span class="badge badge-success">Aktif</span></td>
                     @elseif($data->status == '0')
-                    <td><span class="badge badge-danger">Deactive</span></td>
+                    <td><span class="badge badge-danger">Tidak Aktif</span></td>
                     @else
                     <td></td>
                     @endif
