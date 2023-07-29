@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Notification extends Model
 {
     protected $table = 'notifications';
-    protected $fillable = ['user_id','project_id','judul'];
+    protected $fillable = ['user_id','project_id','judul','mahasiswa'];
 
     public function projectn(){
         return $this->belongsTo(Project::class,'project_id');

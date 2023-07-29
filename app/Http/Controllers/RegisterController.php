@@ -44,7 +44,7 @@ class RegisterController extends Controller
                 'remember_token' => Str::random(60) 
             ]);
 
-            return redirect('login')->with('regis','Berhasil registrasi');
+            return redirect('/')->with('regis','Berhasil registrasi');
         }
     }
 }

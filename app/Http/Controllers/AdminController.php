@@ -60,7 +60,6 @@ class AdminController extends Controller
     {
         $cmile = Milestone::all();
         $calendar = Project::all();
-        $ctask = Task::all();
         $events = array();
         $menu = new Project();
 
@@ -172,7 +171,7 @@ class AdminController extends Controller
         $leftmenu = $menu->getmenu();
         $mhs = Pterpan::where('status', 'Mahasiswa')
             ->orderBy('no_induk', 'asc')
-            ->paginate();
+            ->paginate(500);
         $projects = Project::all();
         foreach ($projects as $p) {
             $nilaij = json_encode($p->nilai);
@@ -198,6 +197,22 @@ class AdminController extends Controller
         $mhs->name = $request->name;
         $mhs->no_induk = $request->no_induk;
         $mhs->save();
+
+        $mhsh = History::where('no_induk',$request->no_induk)->first();
+        if ($mhsh) {
+            $mhsh->nama = $request->name;
+            $mhsh->no_induk = $request->no_induk;
+            $mhsh->save();
+        }
+
+        $mhsu = User::where('no_induk',$request->no_induk)->first();
+        if ($mhsu) {
+            $mhsu->name = $request->name;
+            $mhsu->no_induk = $request->no_induk;
+            $mhsu->save();
+        }
+
+
         $sucess = array(
             'message' => 'Berhasil mengupdate Mahasiswa',
             'alert-type' => 'success'
@@ -340,7 +355,37 @@ class AdminController extends Controller
         $periode = Periode::paginate();
         $menu = new Project();
         $leftmenu = $menu->getmenu();
-        return view('admin.listperiode', compact('periode', 'leftmenu'));
+        $lastPeriode = Periode::orderBy('tahun_ajaran', 'desc')->first();
+
+        if ($lastPeriode) {
+            // Mendapatkan nilai tahun ajaran terakhir
+            $lastTahunAjaran = $lastPeriode->tahun_ajaran;
+        
+            // Mendapatkan dua digit terakhir tahun ajaran terakhir
+            $lastTahunAjaranDigit = intval(substr($lastTahunAjaran, -2));
+        
+            // Menentukan dua digit terakhir yang baru
+            if ($lastTahunAjaranDigit % 10 === 2) {
+                // Jika dua digit terakhir adalah 2, maka ganti menjadi 1
+                $newTahunAjaranDigit = 1;
+                
+                // Mendapatkan tahun ajaran dengan format YYYY
+                $tahunAjaranYYYY = substr($lastTahunAjaran, 0, 4) + 1;
+            } else {
+                // Menggunakan dua digit terakhir yang sama dengan tahun ajaran terakhir
+                $newTahunAjaranDigit = $lastTahunAjaranDigit + 1;
+                
+                // Mendapatkan tahun ajaran dengan format YYYY
+                $tahunAjaranYYYY = intval(substr($lastTahunAjaran, 0, -2));
+            }
+        
+            // Menggabungkan dua digit terakhir yang baru dengan tahun ajaran YYYY
+            $newTahunAjaran = $tahunAjaranYYYY . sprintf("%01d", $newTahunAjaranDigit);
+        
+            // Menggunakan nilai tahun ajaran baru untuk menampilkan pada form
+            $tahunAjaranDefault = $newTahunAjaran;
+        }
+        return view('admin.listperiode', compact('periode', 'leftmenu','tahunAjaranDefault'));
     }
 
     public function tambahperiode(Request $request)
@@ -426,7 +471,7 @@ class AdminController extends Controller
         $notif->save();
 
         $sucess = array(
-            'message' => 'Berhasil mengupdate Periode',
+            'message' => 'Berhasil mengupdate Proyek',
             'alert-type' => 'success'
         );
         // Set status periode lain menjadi tidak aktif jika ada satu periode yang diaktifkan

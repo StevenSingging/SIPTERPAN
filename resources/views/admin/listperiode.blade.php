@@ -135,7 +135,7 @@
                     <div class="form-group row">
                         <label for="name" class="col-sm-3 col-form-label">Tahun Ajaran</label>
                         <div class="col-sm-9">
-                            <input type="text" name="tahun_ajaran" class="form-control" maxlength="5" required>
+                            <input type="text" name="tahun_ajaran" class="form-control" maxlength="5" value="{{ $tahunAjaranDefault }}" required>
                         </div>
                     </div>
                     <div class="form-group row">

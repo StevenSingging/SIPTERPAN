@@ -104,7 +104,7 @@ class MahasiswaController extends Controller
         $history = History::pluck('no_induk')->unique();
         $pterpan = Pterpan::all();
         $milestonemhs = Milestone::where('project_id', $id)->get();
-        $notifp = Notification::select('judul', 'user_id', 'project_id', 'created_at')
+        $notifp = Notification::select('judul', 'user_id', 'project_id', 'created_at', 'mahasiswa')
             ->where('project_id', $id)
             ->selectRaw('DATE(created_at) as tanggal, TIME(created_at) as waktu')
             ->orderByDesc('created_at')
@@ -112,6 +112,16 @@ class MahasiswaController extends Controller
             ->groupBy(function ($item) {
                 return $item->tanggal;
             });
+        $notifmhs = [];
+
+        foreach ($notifp as $tanggal => $items) {
+            foreach ($items as $item) {
+                $mahasiswa = json_decode($item->mahasiswa,true);
+                $item->mahasiswa = $mahasiswa;
+            }
+            $notifmhs[$tanggal] = $items;
+        }
+        
         $conver = Conversation::select('id', 'judul', 'user_id', 'teks', 'project_id', 'file_id', 'created_at')
             ->where(['project_id' => $id])
             ->groupBy('id', 'judul', 'user_id', 'teks', 'project_id', 'file_id', 'created_at')
@@ -130,6 +140,7 @@ class MahasiswaController extends Controller
             $idArray = json_decode($kmhs->mahasiswa);
             //lanjutan kode
         }
+
         $milestone = Milestone::where('project_id', $id)->get();
         foreach ($milestone as $mls) {
             if ($mls->jatuh_tempo < date('Y-m-d') && $mls->file_id == null) {
@@ -147,7 +158,7 @@ class MahasiswaController extends Controller
             })
             ->count();
         //dd(date('d-m-Y'));
-        return view('mahasiswa.vproject', compact('clog', 'cmile', 'history', 'logmhs', 'konsulmhs', 'idArray', 'prjk', 'prjct', 'pterpan', 'milestonemhs', 'notifp', 'conver', 'converr', 'file', 'leftmenu'), ['chart' => $chart->build($id)]);
+        return view('mahasiswa.vproject', compact('clog', 'cmile', 'history', 'logmhs', 'konsulmhs', 'idArray', 'prjk', 'prjct', 'pterpan', 'milestonemhs', 'notifp', 'conver', 'converr', 'file', 'leftmenu', 'notifmhs'), ['chart' => $chart->build($id)]);
     }
 
     public function calendar()

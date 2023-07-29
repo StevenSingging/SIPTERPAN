@@ -263,6 +263,7 @@ class DosenController extends Controller
             $notif->user_id = $request->user()->id;
             $notif->project_id =  $request->project_id;
             $notif->judul = "Membuat Konsultasi " . $request->name;
+            $notif->mahasiswa =  json_encode($request->input('mahasiswa'));
             $notif->created_at = Carbon::now(); # new \Datetime()
             $notif->updated_at = Carbon::now(); # new \Datetime()
             $notif->save();

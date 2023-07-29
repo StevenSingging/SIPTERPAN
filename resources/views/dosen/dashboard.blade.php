@@ -125,26 +125,28 @@
                   Dibuat {{date('d F Y', strtotime($dprjct->created_at))}}
                 </small>
               </td>
-              @foreach($history as $no_induk)
-              @if(!empty($dprjct->mahasiswa1 == $no_induk))
-              @php
-              $mahasiswa = \App\Models\History::where('no_induk', $no_induk)->first();
-              @endphp
-              <td>{{$mahasiswa->nama}}<br>
+              
+              <td>
+                @foreach($history as $no_induk)
+                @if(!empty($dprjct->mahasiswa1 == $no_induk))
+                @php
+                $mahasiswa1 = \App\Models\History::where('no_induk', $no_induk)->first();
+                @endphp
+                {{$mahasiswa1->nama}}<br>
                 @endif
 
                 @if(!empty($dprjct->mahasiswa2 == $no_induk))
                 @php
-                $mahasiswa = \App\Models\History::where('no_induk', $no_induk)->first();
+                $mahasiswa2= \App\Models\History::where('no_induk', $no_induk)->first();
                 @endphp
-                {{$mahasiswa->nama}}<br>
+                {{$mahasiswa2->nama}}<br>
                 @endif
 
                 @if(!empty($dprjct->mahasiswa3 == $no_induk))
                 @php
-                $mahasiswa = \App\Models\History::where('no_induk', $no_induk)->first();
+                $mahasiswa3 = \App\Models\History::where('no_induk', $no_induk)->first();
                 @endphp
-                {{$mahasiswa->nama}}</br>
+                {{$mahasiswa3->nama}}</br>
                 @endif
                 @endforeach
               </td>
@@ -173,7 +175,7 @@
                   </i>
                 </a>
                 @endif
-                <a class="btn btn-primary btn-sm" href="{{url('dosen/downloadrekap',$dprjct->id)}}">
+                <a class="btn btn-primary btn-sm" href="{{url('dosen/downloadrekap',$dprjct->id)}}" target="_blank">
                   <i class="fas fa-download"></i>
                 </a>
               </td>

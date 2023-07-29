@@ -15,18 +15,19 @@
   </div>
 </div><!-- /.container-fluid -->
 <div class="container-fluid">
-  <div class="card-body">
-    <div class="row">
-      <div class="col-md-6">
-        <form action="{{route('simpanproject')}}" method="post">
-          {{ csrf_field() }}
-          <div class="form-group">
-            <label for="inputName">Nama Proyek</label>
-            <input type="text" name="nama" class="form-control" required>
-          </div>
-          <div class="form-group">
-            <label for="inputDescription">Deskripsi Proyek</label>
-            <textarea name="deskripsi" class="form-control" rows="4"></textarea required>
+  <div class="card">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <form action="{{route('simpanproject')}}" method="post">
+            {{ csrf_field() }}
+            <div class="form-group">
+              <label for="inputName">Nama Proyek</label>
+              <input type="text" name="nama" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="inputDescription">Deskripsi Proyek</label>
+              <textarea name="deskripsi" class="form-control" rows="4"></textarea required>
           </div>
           @if($periode->status == '1')
           <div class="form-group">
@@ -85,6 +86,7 @@
       </div>
     </div>
   </div>
+</div>
 </div>
 </div>
 <script>

@@ -44,7 +44,7 @@
               @php $no=1; @endphp
               @foreach($dsn as $ddsn)
               <tr align="center">
-                <th scope="row"><?php echo e($no++) + (($dsn->currentPage() - 1) * $dsn->perPage()) ?></th>
+                <td scope="row"><?php echo e($no++) + (($dsn->currentPage() - 1) * $dsn->perPage()) ?></td>
                 <td>{{$ddsn->no_induk}}</td>
                 <td>{{$ddsn->name}}</td>
                 <td>

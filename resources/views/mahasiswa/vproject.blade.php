@@ -82,29 +82,25 @@
 
                                             @if($value->status == '2')
 
-                                            @elseif($value->status == '1' && $value->jatuh_tempo < date('Y-m-d')) 
-
-                                            @elseif($value->status == '1' && $value->jatuh_tempo >= date('Y-m-d'))
+                                            @elseif($value->status == '1' && $value->jatuh_tempo < date('Y-m-d')) @elseif($value->status == '1' && $value->jatuh_tempo >= date('Y-m-d'))
                                                 <input type="file" name="filec" class="form-control" required>
-                                            @elseif($value->status == '0' )
+                                                @elseif($value->status == '0' )
                                                 <input type="file" name="filec" class="form-control" required>
-                                            @endif
+                                                @endif
 
                                         </div>
                                         <div class="row">
                                             <div class="col-12">
                                                 @if($value->status == '2')
 
-                                                @elseif($value->status == '1' && $value->jatuh_tempo < date('Y-m-d')) 
+                                                @elseif($value->status == '1' && $value->jatuh_tempo < date('Y-m-d')) @elseif($value->status == '1' && $value->jatuh_tempo >= date('Y-m-d'))
+                                                    <input type="reset" value="Reset" class="btn btn-danger ">
+                                                    <input type="submit" value="Submit" class="btn btn-success ">
+                                                    @elseif($value->status == '0' )
+                                                    <input type="reset" value="Reset" class="btn btn-danger ">
+                                                    <input type="submit" value="Submit" class="btn btn-success ">
+                                                    @endif
 
-                                                @elseif($value->status == '1' && $value->jatuh_tempo >= date('Y-m-d'))
-                                                <input type="reset" value="Reset" class="btn btn-danger ">
-                                                <input type="submit" value="Submit" class="btn btn-success ">
-                                                @elseif($value->status == '0' )
-                                                <input type="reset" value="Reset" class="btn btn-danger ">
-                                                <input type="submit" value="Submit" class="btn btn-success ">
-                                                @endif
-                                                    
                                             </div>
                                         </div>
                                     </form>
@@ -176,7 +172,7 @@
                                     <div class="icon">
                                         <i class="ion ion-flag"></i>
                                     </div>
-                                   
+
                                 </div>
                             </div>
 
@@ -198,7 +194,7 @@
                                     <div class="card-header border-0">
                                     </div>
                                     <div class="card-body">
-                                    {!! $chart->container() !!}
+                                        {!! $chart->container() !!}
                                     </div>
                                 </div>
                                 <!-- /.card -->
@@ -367,7 +363,7 @@
                                                     <td>{{$dfile->file_name}}</td>
                                                     <td>{{$dfile->updated_at}}</td>
                                                     <td>
-                                                        <a class="btn btn-primary btn-sm" href="{{ route('downloadfile', ['id' => $dfile->id]) }}" ><i class="fas fa-download"></i></a>
+                                                        <a class="btn btn-primary btn-sm" href="{{ route('downloadfile', ['id' => $dfile->id]) }}"><i class="fas fa-download"></i></a>
                                                     </td>
                                                 </tr>
                                                 @endforeach
@@ -569,9 +565,19 @@
                                             <span class="time"><i class="fas fa-clock"></i>{{date('h:i a', strtotime($item->created_at))}}</span>
                                             <h3 class="timeline-header"><a href="#">{{$item->usern->name}}</a> </h3>
 
+
                                             <div class="timeline-body">
+
                                                 {{$item->judul}}
+                                                @if(is_array($item->mahasiswa))
+                                                @foreach($item->mahasiswa as $mahasiswa)
+                                                {{ $mahasiswa }}
+                                                @endforeach
+                                                @endif
+
                                             </div>
+
+
                                         </div>
                                     </div>
                                     @endforeach
@@ -627,8 +633,8 @@
                             <b>Mahasiswa 3</b>&emsp; &emsp; &emsp; &emsp; &emsp; &ensp;{{$mahasiswa->nama}}</br>
                             @endif
                             @endforeach
-                            <b>Tanggal Mulai</b>   &ensp; &emsp; &emsp; &emsp; &ensp; &ensp; {{date('d F Y', strtotime($prj->mulai))}}</br>
-                            <b>Tanggal Selesai</b>   &ensp; &emsp; &emsp; &emsp; &ensp; {{date('d F Y', strtotime($prj->jatuh_tempo))}}</br>
+                            <b>Tanggal Mulai</b> &ensp; &emsp; &emsp; &emsp; &ensp; &ensp; {{date('d F Y', strtotime($prj->mulai))}}</br>
+                            <b>Tanggal Selesai</b> &ensp; &emsp; &emsp; &emsp; &ensp; {{date('d F Y', strtotime($prj->jatuh_tempo))}}</br>
                             @endforeach
                         </div>
                     </div>

@@ -129,12 +129,14 @@
                                 Dibuat {{date('d F Y', strtotime($dprjct->created_at))}}
                             </small>
                         </td>
+                        
+                        <td>
                         @foreach($history as $no_induk)
                         @if(!empty($dprjct->mahasiswa1 == $no_induk))
                         @php
                         $mahasiswa = \App\Models\History::where('no_induk', $no_induk)->first();
                         @endphp
-                        <td>{{$mahasiswa->nama}}<br>
+                            {{$mahasiswa->nama}}<br>
                             @endif
 
                             @if(!empty($dprjct->mahasiswa2 == $no_induk))
